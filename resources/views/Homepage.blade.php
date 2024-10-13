@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog HUMIC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         /* Navbar */
         .custom-navbar {
@@ -29,7 +30,7 @@
 
         .navbar-brand img {
             width: 221px;
-            height: 80px;
+            height: auto;
             padding-left: 48px;
         }
 
@@ -134,6 +135,7 @@
 
         .about-content {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
             max-width: 1200px;
@@ -144,11 +146,13 @@
             flex: 0 0 35%;
             max-width: 100%;
             height: auto;
+            margin-bottom: 20px;
         }
 
         .about-text {
             flex: 1;
             padding-left: 60px;
+            text-align: left;
         }
 
         .about-title {
@@ -181,8 +185,6 @@
             background-color: #bb9899;
         }
 
-
-
         /* Focused Section */
         .focused-section {
             padding: 60px 20px;
@@ -201,6 +203,7 @@
             padding: 20px;
             border-radius: 8px;
             text-align: center;
+            margin-bottom: 30px;
         }
 
         .card-image {
@@ -251,6 +254,11 @@
             text-align: center;
             position: relative;
             width: 400px;
+            transition: transform 0.3s ease;
+        }
+
+        .catalog-card:hover {
+            transform: translateY(-10px);
         }
 
         .card-image-catalog {
@@ -263,11 +271,16 @@
         }
 
         .catalog-product-name {
-
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #c5181f;
         }
 
         .catalog-product-description {
             font-weight: 500;
+            font-size: 16px;
+            color: #333;
         }
 
         .catalog-button {
@@ -288,7 +301,6 @@
             background-color: #a41518;
         }
 
-
         /* Footer */
         .footer {
             background-color: #333;
@@ -296,6 +308,339 @@
             text-align: center;
             color: #fff;
         }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .hero-title {
+                font-size: 80px;
+            }
+
+            .hero-title-red {
+                font-size: 80px;
+            }
+
+            .hero-title-catalog {
+                font-size: 60px;
+            }
+
+            .about-title {
+                font-size: 40px;
+            }
+
+            .catalog-card {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-item {
+                padding-right: 24px;
+            }
+
+            .navbar-brand img {
+                width: 180px;
+                padding-left: 24px;
+            }
+
+            .hero-title {
+                font-size: 70px;
+            }
+
+            .hero-title-red {
+                font-size: 70px;
+            }
+
+            .hero-title-catalog {
+                font-size: 50px;
+            }
+
+            .hero-description {
+                font-size: 24px;
+            }
+
+            .hero-button {
+                font-size: 20px;
+                padding: 14px 28px;
+            }
+
+            .about-title {
+                font-size: 35px;
+            }
+
+            .about-description {
+                font-size: 20px;
+            }
+
+            .catalog-title {
+                font-size: 40px;
+                margin-bottom: 80px;
+            }
+
+            .catalog-card {
+                width: 300px;
+                margin: 60px auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-item {
+                padding-right: 16px;
+            }
+
+            .navbar-brand img {
+                width: 150px;
+                padding-left: 16px;
+            }
+
+            .hero-title {
+                font-size: 60px;
+            }
+
+            .hero-title-red {
+                font-size: 60px;
+            }
+
+            .hero-title-catalog {
+                font-size: 40px;
+            }
+
+            .hero-description {
+                font-size: 20px;
+                margin: 20px 0;
+            }
+
+            .hero-button {
+                font-size: 18px;
+                padding: 12px 24px;
+            }
+
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .about-text {
+                padding-left: 0;
+            }
+
+            .about-title {
+                text-align: center;
+            }
+
+            .catalog-title {
+                font-size: 35px;
+                margin-bottom: 60px;
+            }
+
+            .catalog-card {
+                width: 100%;
+                max-width: 350px;
+                border-radius: 20px 20px 10px 10px;
+                margin: 40px auto;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-item {
+                padding-right: 12px;
+            }
+
+            .navbar-brand img {
+                width: 120px;
+                padding-left: 12px;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .hero-title-red {
+                font-size: 40px;
+            }
+
+            .hero-title-catalog {
+                font-size: 30px;
+            }
+
+            .hero-description {
+                font-size: 18px;
+                margin: 15px 0;
+            }
+
+            .hero-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .about-title {
+                font-size: 30px;
+            }
+
+            .about-description {
+                font-size: 18px;
+            }
+
+            .focused-title {
+                font-size: 40px;
+                margin-bottom: 30px;
+            }
+
+            .focused-card {
+                margin-bottom: 20px;
+            }
+
+            .catalog-title {
+                font-size: 30px;
+                margin-bottom: 40px;
+            }
+
+            .catalog-card {
+                width: 100%;
+                max-width: 300px;
+                border-radius: 15px 15px 10px 10px;
+                margin: 30px auto;
+            }
+
+            .catalog-product-name {
+                font-size: 18px;
+            }
+
+            .catalog-product-description {
+                font-size: 14px;
+            }
+
+            .catalog-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+
+        /* Footer styling */
+        .footer {
+    background-color: #333;
+    color: #fff;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    flex: 1 1 200px;
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    width: 150px;
+    height: auto;
+}
+
+.footer-text {
+    flex: 2 1 300px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.footer-text h3 {
+    color: #c5181f;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.footer-text p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.footer-social {
+    padding-top: 48px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.footer-social a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    position: relative;
+}
+
+.footer-social a i {
+    color: white;
+    background-color: #c5181f;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.footer-social a:hover i {
+    background-color: #a11215;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    color: #c5181f;
+    text-transform: uppercase;
+}
+
+.footer-bottom a {
+    color: #c5181f;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .footer-logo img {
+        width: 120px;
+    }
+
+    .footer-text h3 {
+        font-size: 22px;
+    }
+
+    .footer-text p {
+        font-size: 14px;
+    }
+
+    .footer-social {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .footer-social a {
+        font-size: 12px;
+        margin-bottom: 5px; 
+    }
+
+    .footer-social a i {
+        font-size: 16px;
+    }
+}
+
+
+
     </style>
 </head>
 
@@ -423,10 +768,43 @@
         </div>
     </section>
     
+<!-- Footer -->
+<footer id="footer" class="footer">
+    <div class="footer-container">
+        <!-- Logo Section -->
+        <div class="footer-logo">
+            <img src="{{url('/images/logo-humic.png')}}" alt="HUMIC Logo">
+        </div>
+        <!-- Text and Social Media Section -->
+        <div class="footer-text">
+            <h3>HUMIC ENGINEERING</h3>
+            <p>HUMIC - Human Centric Engineering Research Center</p>
+            <p>Jl. Telekomunikasi Terussan Buah Batu, Bandung Jawa Barat, Indonesia, 40257</p>
+            <!-- Social Media Section moved inside the text container -->
+            <div class="footer-social">
+                <a href="mailto:humic@telkomuniversity.ac.id">
+                    <i class="fas fa-envelope"></i> humic@telkomuniversity.ac.id
+                </a>
+                <a href="https://humic.telkomuniversity.ac.id" target="_blank">
+                    <i class="fas fa-globe"></i> humic.telkomuniversity.ac.id
+                </a>
+                <a href="https://instagram.com/humicengineering" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://facebook.com/humicengineering" target="_blank">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://linkedin.com/in/humicengineering" target="_blank">
+                    <i class="fab fa-linkedin"></i> humicengineering
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <a href="https://humic.telkomuniversity.ac.id" class="footer-link">© 2024 HUMIC Research Center</a>
+    </div>
+</footer>
 
-    <footer id="footer" class="footer">
-        <p>© 2024 RC HUMIC. All Rights Reserved.</p>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
