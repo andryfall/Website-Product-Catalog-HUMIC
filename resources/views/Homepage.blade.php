@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog HUMIC</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip/dist/dearflip.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <style>
         /* Navbar */
         .custom-navbar {
@@ -23,10 +25,21 @@
         }
 
         .navbar-text {
-            color: #c5181f;
+            color: #000000;
             font-size: 18px;
             font-weight: 600;
         }
+
+
+
+        .nav-text:hover {
+            color: #ff0000;
+        }
+
+        .nav-text.active {
+            color: #ff0000;
+        }
+
 
         .navbar-brand img {
             width: 221px;
@@ -229,10 +242,10 @@
 
         /* Catalog Section */
         .catalog-section {
-            padding: 180px 20px;
-            background-color: #b4262a;
-            background-size: cover;
-            background-position: center;
+        padding: 180px 20px;
+        background-color: #b4262a;
+        background-size: cover;
+        background-position: center;
         }
 
         .catalog-title {
@@ -243,62 +256,200 @@
         }
 
         .catalog-card {
-            align-self: center;
-            border: none;
-            background-color: #fff;
-            padding-left: 20px;
-            padding-right: 20px;
-            padding-bottom: 20px;
-            margin: 80px auto;
-            border-radius: 300px 300px 16px 16px;
-            text-align: center;
-            position: relative;
-            width: 400px;
-            transition: transform 0.3s ease;
-        }
-
-        .catalog-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .card-image-catalog {
-            width: 100%;
-            height: 350px;
+            background-image: url('{{url('/images/bg-product.png')}}');
             background-size: cover;
             background-position: center;
-            border-radius: 300px 300px 16px 16px;
+            border: none;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 80px auto;
+            position: relative;
+            transition: transform 0.3s ease, background 0.3s ease;
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .catalog-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 10px;
+            z-index: 0;
+        }
+
+        .catalog-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-image-circular {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background-color: #fff;
+            margin: 0 auto;
             margin-bottom: 20px;
+            background-size: cover;
+            background-position: center;
+            transition: width 0.3s ease, height 0.3s ease;
+            z-index: 1;
+            position: relative;
         }
 
         .catalog-product-name {
-            font-size: 20px;
+            font-size: 30px;
             font-weight: bold;
-            margin-bottom: 10px;
-            color: #c5181f;
+            color: #ffffff;
+            transition: font-size 0.3s ease, opacity 0.3s ease;
+            z-index: 1;
+            position: relative;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
+
+
+        .hovered-items {
+            position: relative;
+            z-index: 1;
+        }
+
+        .catalog-product-description,
+        .catalog-button {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, font-size 0.3s ease;
+        }
+
+        .catalog-card:hover .catalog-product-name {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .catalog-card:hover .card-image-circular {
+            width: 100px;
+            height: 100px;
+        }
+
+        .catalog-card:hover .catalog-product-description,
+        .catalog-card:hover .catalog-button {
+            opacity: 1;
+            visibility: visible;
         }
 
         .catalog-product-description {
             font-weight: 500;
-            font-size: 16px;
-            color: #333;
+            font-size: 18px;
+            color: #ffffff;
+            margin-top: 40px;
         }
 
         .catalog-button {
             display: inline-block;
-            padding: 12px 24px;
-            background-color: #c5181f;
-            color: #fff;
-            font-size: 18px;
+            padding: 8px 16px;
+            background-color: #ffffff;
+            color: #000000;
+            font-size: 14px;
             text-transform: uppercase;
+            font-weight: 500;
             border: none;
             border-radius: 15px;
             text-decoration: none;
+            margin-top: 10px;
             transition: background-color 0.3s ease;
-            margin-top: 20px;
         }
 
         .catalog-button:hover {
-            background-color: #a41518;
+            background-color: #e0cbcc;
+        }
+
+        .catalog-swiper-container {
+            overflow: hidden;
+        }
+
+        .catalog-swiper-pagination {
+            bottom: 10px;
+            text-align: center;
+        }
+
+        .catalog-swiper-next, .catalog-swiper-prev {
+            color: #fff;
+            width: 40px;
+            height: 40px;
+        }
+
+        .catalog-swiper-next {
+            right: 10px;
+        }
+
+        .catalog-swiper-prev {
+            left: 10px;
+        }
+
+        .catalog-swiper-pagination .swiper-pagination-bullet-active {
+            background-color: white;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .catalog-swiper-pagination {
+                bottom: 8px;
+            }
+
+            .catalog-swiper-next, .catalog-swiper-prev {
+                width: 30px;
+                height: 30px;
+            }
+
+            .catalog-swiper-next {
+                visibility: hidden;
+            }
+
+            .catalog-swiper-prev {
+                visibility: hidden;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .catalog-swiper-pagination {
+                bottom: 5px;
+            }
+
+            .catalog-swiper-next, .catalog-swiper-prev {
+                width: 25px;
+                height: 25px;
+            }
+
+            .catalog-swiper-next {
+                visibility: hidden;
+            }
+
+            .catalog-swiper-prev {
+                visibility: hidden;
+            }
+
+            .catalog-swiper-pagination .swiper-pagination-bullet {
+                width: 6px;
+                height: 6px;
+            }
+        }
+
+
+
+
+        .loader {
+            text-align: center;
+            font-size: 24px;
+            color: #ffffff;
+            margin: 20px 0;
+            font-weight: bold;
         }
 
         /* Footer */
@@ -309,7 +460,6 @@
             color: #fff;
         }
 
-        /* Responsive Adjustments */
         @media (max-width: 1200px) {
             .hero-title {
                 font-size: 80px;
@@ -515,129 +665,128 @@
             }
         }
 
-        /* Footer styling */
         .footer {
-    background-color: #333;
-    color: #fff;
-    padding: 40px 20px;
-    width: 100%;
-}
+            background-color: #333;
+            color: #fff;
+            padding: 40px 20px;
+            width: 100%;
+        }
 
-.footer-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-.footer-logo {
-    flex: 1 1 200px;
-    margin-bottom: 20px;
-}
+        .footer-logo {
+            flex: 1 1 200px;
+            margin-bottom: 20px;
+        }
 
-.footer-logo img {
-    width: 150px;
-    height: auto;
-}
+        .footer-logo img {
+            width: 150px;
+            height: auto;
+        }
 
-.footer-text {
-    flex: 2 1 300px;
-    margin-bottom: 20px;
-    text-align: left;
-}
+        .footer-text {
+            flex: 2 1 300px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-.footer-text h3 {
-    color: #c5181f;
-    font-size: 26px;
-    margin-bottom: 10px;
-}
+        .footer-text h3 {
+            color: #c5181f;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
 
-.footer-text p {
-    font-size: 16px;
-    margin-bottom: 5px;
-}
+        .footer-text p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
 
-.footer-social {
-    padding-top: 48px;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 10px;
-}
+        .footer-social {
+            padding-top: 48px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 10px;
+        }
 
-.footer-social a {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    position: relative;
-}
+        .footer-social a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            position: relative;
+        }
 
-.footer-social a i {
-    color: white;
-    background-color: #c5181f;
-    border-radius: 50%;
-    padding: 10px;
-    font-size: 18px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-}
+        .footer-social a i {
+            color: white;
+            background-color: #c5181f;
+            border-radius: 50%;
+            padding: 10px;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
 
-.footer-social a:hover i {
-    background-color: #a11215;
-}
+        .footer-social a:hover i {
+            background-color: #a11215;
+        }
 
-.footer-bottom {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 20px;
-    color: #c5181f;
-    text-transform: uppercase;
-}
+        .footer-bottom {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+            color: #c5181f;
+            text-transform: uppercase;
+        }
 
-.footer-bottom a {
-    color: #c5181f;
-    text-decoration: none;
-}
+        .footer-bottom a {
+            color: #c5181f;
+            text-decoration: none;
+        }
 
-.footer-bottom a:hover {
-    text-decoration: underline;
-}
+        .footer-bottom a:hover {
+            text-decoration: underline;
+        }
 
-@media (max-width: 576px) {
-    .footer-logo img {
-        width: 120px;
-    }
+        @media (max-width: 576px) {
+            .footer-logo img {
+                width: 120px;
+            }
 
-    .footer-text h3 {
-        font-size: 22px;
-    }
+            .footer-text h3 {
+                font-size: 22px;
+            }
 
-    .footer-text p {
-        font-size: 14px;
-    }
+            .footer-text p {
+                font-size: 14px;
+            }
 
-    .footer-social {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+            .footer-social {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-    .footer-social a {
-        font-size: 12px;
-        margin-bottom: 5px; 
-    }
+            .footer-social a {
+                font-size: 12px;
+                margin-bottom: 5px; 
+            }
 
-    .footer-social a i {
-        font-size: 16px;
-    }
-}
+            .footer-social a i {
+                font-size: 16px;
+            }
+        }
 
 
 
@@ -732,55 +881,45 @@
 
     <section id="catalog" class="catalog-section">
         <h2 class="catalog-title">RC HUMIC CATALOG</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="catalog-card">
-                    <div class="card-image-catalog" style="background-image: url('{{url('/images/placeholder.jpg')}}');"></div>
-                    <h5 class="catalog-product-name">Digital Stethoscope</h5>
-                    <p class="catalog-product-description">A digital stethoscope is an innovative tool used to visually observe heart sounds without the need to rely on the sense of hearing. It focuses on utilizing sound signals specifically to detect heart valve disease.</p>
-                    <a href="https://dev-katakatalog.pantheonsite.io/#dearflip-df_346/1/" class="catalog-button">Read More</a>
-                </div>
+    
+        <div class="swiper catalog-swiper-container">
+            <div class="swiper-wrapper " id="product-list">
+                @foreach($catalogs as $catalog)
+                    <div class="swiper-slide">
+                        <div class="catalog-card">
+                            <div class="card-image-circular" style="background-image: url('{{ $catalog['image'] }}');"></div>
+                            <h5 class="catalog-product-name">{{ $catalog['name'] }}</h5>
+                            <div class="hovered-items">
+                                <p class="catalog-product-description">{{ $catalog['description'] }}</p>
+                                <a href="{{ $catalog['pdf'] }}" class="catalog-button" target="_blank">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            <div class="col-md-6">
-                <div class="catalog-card">
-                    <div class="card-image-catalog" style="background-image: url('{{url('/images/placeholder.jpg')}}');"></div>
-                    <h5 class="catalog-product-name">SiHEDAF</h5>
-                    <p class="catalog-product-description">SiHEDAF functions as an Atrial Fibrillation (AF) detector based on Photoplethysmograph (PPG) signal. AF occurrence statistics can be used as an indication of stroke risk in patients.</p>
-                    <a href="#product2" class="catalog-button">Read More</a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="catalog-card">
-                    <div class="card-image-catalog" style="background-image: url('{{url('/images/placeholder.jpg')}}');"></div>
-                    <h5 class="catalog-product-name">Antropometri Kit</h5>
-                    <p class="catalog-product-description">Anthropometry Kit is a series of tools that function to detect stunting in children through measuring body weight, length and height as well as upper arm and head circumference.</p>
-                    <a href="#product3" class="catalog-button">Read More</a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="catalog-card">
-                    <div class="card-image-catalog" style="background-image: url('{{url('/images/placeholder.jpg')}}');"></div>
-                    <h5 class="catalog-product-name">AMons</h5>
-                    <p class="catalog-product-description">AMons is a portable ECG device equipped with AI-based detection algorithms for near real-time detection and alerting of various arrhythmias, offering a solution for monitoring and timely intervention in heart conditions that may otherwise go undetected.</p>
-                    <a href="#product3" class="catalog-button">Read More</a>
-                </div>
-            </div>
+    
+            <div class="swiper-pagination catalog-swiper-pagination"></div>
+            <div class="swiper-button-next catalog-swiper-next"></div>
+            <div class="swiper-button-prev catalog-swiper-prev"></div>
         </div>
     </section>
+
+    
+    
+    
     
 <!-- Footer -->
 <footer id="footer" class="footer">
     <div class="footer-container">
-        <!-- Logo Section -->
+
         <div class="footer-logo">
             <img src="{{url('/images/logo-humic.png')}}" alt="HUMIC Logo">
         </div>
-        <!-- Text and Social Media Section -->
+
         <div class="footer-text">
             <h3>HUMIC ENGINEERING</h3>
             <p>HUMIC - Human Centric Engineering Research Center</p>
             <p>Jl. Telekomunikasi Terussan Buah Batu, Bandung Jawa Barat, Indonesia, 40257</p>
-            <!-- Social Media Section moved inside the text container -->
             <div class="footer-social">
                 <a href="mailto:humic@telkomuniversity.ac.id">
                     <i class="fas fa-envelope"></i> humic@telkomuniversity.ac.id
@@ -805,9 +944,44 @@
     </div>
 </footer>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/dearflip/dist/dearflip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const swiper = new Swiper('.catalog-swiper-container', {
+                slidesPerView: 2,
+                spaceBetween: 20,
+                pagination: {
+                    el: '.catalog-swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.catalog-swiper-next',
+                    prevEl: '.catalog-swiper-prev',
+                },
+                loop: true,
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    0: { 
+                        slidesPerView: 1,
+                    }
+                }
+            });
+        });
+    </script>
+    
+    
+    
+    
+    
+    
+    
+    
 </body>
 
 </html>

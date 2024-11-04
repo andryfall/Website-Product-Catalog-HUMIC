@@ -7,11 +7,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    
     <title>Admin Dashboard</title>
     <style>
         body {
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -25,16 +28,50 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
         .sidebar a {
             color: black;
             text-decoration: none;
             padding: 10px 15px;
-            display: block;
+            display: flex;
+            align-items: center;
             border-radius: 5px;
             margin-bottom: 10px;
             transition: background 0.3s ease;
+            gap: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .sidebar-profile .profile-fullname {
+            font-weight: bold;
+        }
+
+        .profile-fullname {
+            margin-bottom: -20px;
+            font-size: 20px;
+            font-weight: normal;
+            color: #666;
         }
 
         .sidebar a:hover {
@@ -46,7 +83,22 @@
             padding: 20px;
             flex-grow: 1;
             background-color: #f8f9fa;
+            transition: margin-left 0.3s ease;
         }
+
+        .content.shift {
+            margin-left: 0;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .pagination-wrapper .btn {
+            margin: 0 5px;
+        }
+
 
         .table-wrapper {
             margin-top: 30px;
@@ -75,6 +127,8 @@
 
         .search-bar {
             position: relative;
+            width: 250px;
+            margin-left: auto;
         }
 
         .search-bar input {
@@ -145,15 +199,45 @@
             margin-left: 20px;
         }
 
+        .toggle-btn {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 200px;
+                position: absolute;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .sidebar-profile img {
+                width: 30px;
+                height: 30px;
+            }
+
+            .sidebar-profile .profile-fullname {
+                font-size: 16px;
+            }
+
+            .sidebar-profile .text-muted {
+                font-size: 14px;
             }
 
             .content {
                 margin-left: 0;
+            }
+
+            .content.shift {
+                margin-left: 200px;
+            }
+
+            .toggle-btn {
+                display: block;
+                margin-bottom: 20px;
             }
 
             .header-section {
@@ -169,17 +253,12 @@
                 font-size: 14px;
             }
 
-
             .card-container {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .card-container .card:first-child {
-                width: 80%;
-                margin: 10px 0;
-            }
-
+            .card-container .card:first-child,
             .card-container .card:last-child {
                 width: 80%;
                 margin: 10px 0;
@@ -199,7 +278,7 @@
 </head>
 
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <img src="{{url('/images/logo-humic-text.png')}}" alt="HUMIC Logo" class="img-fluid mb-3">
         <ul class="nav flex-column" style="flex-grow: 1;">
             <li class="nav-item">
@@ -213,22 +292,38 @@
                 </a>
             </li>
             <li class="nav-item" style="margin-top:auto;">
-                <a href="login" class="nav-link">
+                <a href="profile" class="nav-link sidebar-profile">
+                    <img src="{{ session('admin.profile_image') }}" alt="Profile Picture">
+                    <div>
+                        <span class="profile-fullname">{{ session('admin.first_name') }} {{ session('admin.last_name') }}</span><br>
+                        <span class="text-muted">Admin</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item d-flex">
+                <a href="settings" class="nav-link" style="border-left: 1px solid #ccc; padding-left: 15px;">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="javascript:void(0);" id="logoutBtn" class="nav-link flex-grow-1" data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
                     <i class="fas fa-sign-out-alt"></i> Log Out
                 </a>
             </li>
         </ul>
     </div>
+    
 
-    <div class="content">
+    <div class="content" id="content">
+        <button class="btn btn-danger toggle-btn" id="toggleBtn">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="card-container">
             <div class="card">
-                <h5>4</h5>
+                <h5>{{ $catalogCount }}</h5>
                 <p>Catalogs</p>
                 <i class="fas fa-file-alt icon" style="color: white;"></i>
             </div>
             <div class="card">
-                <h5>3</h5>
+                <h5>{{ $logCount }}</h5>
                 <p>Recent Activities</p>
                 <i class="fas fa-file-signature icon" style="color: white;"></i>
             </div>
@@ -242,7 +337,7 @@
                     <i class="fas fa-search"></i>
                 </div>
             </div>
-
+        
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -254,31 +349,71 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Added</td>
-                        <td>Product 1</td>
-                        <td>2024-10-09 12:45 PM</td>
-                        <td>Added a new product to the catalog.</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Updated</td>
-                        <td>Product 2</td>
-                        <td>2024-10-09 1:15 PM</td>
-                        <td>Updated product details for Product 2.</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Deleted</td>
-                        <td>Product 3</td>
-                        <td>2024-10-09 2:05 PM</td>
-                        <td>Removed a discontinued product from the catalog.</td>
-                    </tr>
+                    @if(count($logs) > 0)
+                        @php $i = ($currentPage - 1) * 8 + 1; @endphp
+                        @foreach ($logs as $log)
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $log['activity'] }}</td>
+                                <td>{{ $log['item_name'] }}</td>
+                                <td>{{ $log['date_time'] }}</td>
+                                <td>{{ $log['description'] }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="5" class="text-center">No catalogs available.</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
+        
+            <div class="pagination-wrapper">
+                @for ($page = 1; $page <= $lastPage; $page++)
+                    <a href="{{ request()->url() }}?page={{ $page }}" class="btn {{ $page == $currentPage ? 'btn-danger' : 'btn-secondary' }}">
+                        {{ $page }}
+                    </a>
+                @endfor
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmLogoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Log Out</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('toggleBtn').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+
+            sidebar.classList.toggle('visible');
+            content.classList.toggle('shift');
+        });
+
+        document.getElementById('confirmLogoutButton').addEventListener('click', function() {
+        window.location.href = 'login'; // Redirect to the login page or actual logout route
+         });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

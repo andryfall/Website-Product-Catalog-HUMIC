@@ -12,7 +12,7 @@
         body {
             display: flex;
             min-height: 100vh;
-            flex-direction: column;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -26,24 +26,50 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
         .sidebar a {
             color: black;
             text-decoration: none;
             padding: 10px 15px;
-            display: block;
+            display: flex;
+            align-items: center;
             border-radius: 5px;
             margin-bottom: 10px;
             transition: background 0.3s ease;
+            gap: 10px;
         }
 
         .sidebar a:hover {
             background-color: #f1f1f1;
         }
 
-        .sidebar .nav-item i {
-            margin-right: 10px;
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .sidebar-profile .profile-fullname {
+            font-weight: bold;
+        }
+
+        .profile-fullname {
+            margin-bottom: -20px;
+            font-size: 20px;
+            font-weight: normal;
+            color: #666;
         }
 
         .content {
@@ -51,6 +77,11 @@
             padding: 20px;
             flex-grow: 1;
             background-color: #f8f9fa;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content.shift {
+            margin-left: 0;
         }
 
         .table-wrapper {
@@ -70,11 +101,11 @@
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
-        
+
         .table tbody td.description {
             max-width: 500px;
-            overflow:hidden;
-            text-overflow:ellipsis;
+            overflow: hidden;
+            text-overflow: ellipsis;
             white-space: nowrap;
         }
 
@@ -104,7 +135,6 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
 
         .main-title {
@@ -128,7 +158,6 @@
             color: #a11215;
         }
 
-        /* Styles for the plus button */
         .add-button {
             background-color: #c5181f;
             color: white;
@@ -143,7 +172,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             right: 30px;
             z-index: 1000;
             transition: transform 0.3s ease;
@@ -155,20 +184,45 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
+        .toggle-btn {
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                width: 200px;
+                position: absolute;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .sidebar-profile img {
+                width: 30px;
+                height: 30px;
+            }
+
+            .sidebar-profile .profile-fullname {
+                font-size: 16px;
+            }
+
+            .sidebar-profile .text-muted {
+                font-size: 14px;
             }
 
             .content {
                 margin-left: 0;
             }
 
-            .search-bar {
-                width: 100%;
-                margin-top: 10px;
+            .content.shift {
+                margin-left: 200px;
+            }
+
+            .toggle-btn {
+                display: block;
+                margin-bottom: 20px;
             }
 
             .header-section {
@@ -178,6 +232,7 @@
 
             .table-wrapper {
                 padding: 10px;
+                margin-top: 10px;
             }
 
             .table {
@@ -188,17 +243,24 @@
         @media (max-width: 576px) {
             .table-wrapper {
                 padding: 5px;
+                margin-top: 5px;
             }
 
             .action-icons button {
                 font-size: 16px;
+            }
+
+            .add-button {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <img src="{{url('/images/logo-humic-text.png')}}" alt="HUMIC Logo" class="img-fluid mb-3">
         <ul class="nav flex-column" style="flex-grow: 1;">
             <li class="nav-item">
@@ -212,14 +274,44 @@
                 </a>
             </li>
             <li class="nav-item" style="margin-top:auto;">
-                <a href="login" class="nav-link">
+                <a href="profile" class="nav-link sidebar-profile">
+                    <img src="{{ session('admin.profile_image') }}" alt="Profile Picture">
+                    <div>
+                        <span class="profile-fullname">{{ session('admin.first_name') }} {{ session('admin.last_name') }}</span><br>
+                        <span class="text-muted">Admin</span>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item d-flex">
+                <a href="settings" class="nav-link" style="border-left: 1px solid #ccc; padding-left: 15px;">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="javascript:void(0);" id="logoutBtn" class="nav-link flex-grow-1" data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
                     <i class="fas fa-sign-out-alt"></i> Log Out
                 </a>
             </li>
         </ul>
     </div>
+    
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show fixed-top mx-auto text-center mt-3" role="alert" style="width: 90%; max-width: 500px; z-index: 1050;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-    <div class="content">
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show fixed-top mx-auto text-center mt-3" role="alert" style="width: 90%; max-width: 500px; z-index: 1050;">
+            {{ $errors->first() }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <div class="content" id="content">
+        <button class="btn btn-danger toggle-btn" id="toggleBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+
         <div class="main-title">
             Catalog Management
         </div>
@@ -235,59 +327,52 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Date & Time</th>
                         <th>Description</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Digital Stethoscope</td>
-                        <td>2024-10-09 12:45 PM</td>
-                        <td class="description">A digital stethoscope is an innovative tool used to visually observe heart sounds without the need to rely on the sense of hearing. It focuses on utilizing sound signals specifically to detect heart valve disease.</td>
-                        <td class="action-icons">
-                            <button class="edit-button" data-id="1"><i class="fas fa-edit"></i></button>
-                            <button class="delete-button" data-id="3"><i class="fas fa-trash"></i></button>
-                            <button class="info-button" data-id="3"><i class="fas fa-info-circle"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>SiHEDAF</td>
-                        <td>2024-10-09 1:15 PM</td>
-                        <td class="description">SiHEDAF functions as an Atrial Fibrillation (AF) detector based on Photoplethysmograph (PPG) signal. AF occurrence statistics can be used as an indication of stroke risk in patients.</td>
-                        <td class="action-icons">
-                            <button class="edit-button" data-id="2"><i class="fas fa-edit"></i></button>
-                            <button class="delete-button" data-id="3"><i class="fas fa-trash"></i></button>
-                            <button class="info-button" data-id="3"><i class="fas fa-info-circle"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Antropometri Kit</td>
-                        <td>2024-10-09 2:05 PM</td>
-                        <td class="description">Anthropometry Kit is a series of tools that function to detect stunting in children through measuring body weight, length and height as well as upper arm and head circumference.</td>
-                        <td class="action-icons">
-                            <button class="edit-button" data-id="3"><i class="fas fa-edit"></i></button>
-                            <button class="delete-button" data-id="3"><i class="fas fa-trash"></i></button>
-                            <button class="info-button" data-id="3"><i class="fas fa-info-circle"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>AMons</td>
-                        <td>2024-10-09 3:05 PM</td>
-                        <td class="description">AMons is a portable ECG device equipped with AI-based detection algorithms for near real-time detection and alerting of various arrhythmias, offering a solution for monitoring and timely intervention in heart conditions that may otherwise go undetected.</td>
-                        <td class="action-icons">
-                            <button class="edit-button" data-id="3"><i class="fas fa-edit"></i></button>
-                            <button class="delete-button" data-id="3"><i class="fas fa-trash"></i></button>
-                            <button class="info-button" data-id="3"><i class="fas fa-info-circle"></i></button>
-                        </td>
-                    </tr>
-                </tbody>                
+                <tbody id="catalogTableBody">
+                    @if(count($catalogs) > 0)
+                        @foreach ($catalogs as $id => $catalog)
+                            <tr class="catalog-row">
+                                <td class="catalog-name">{{ $catalog['name'] }}</td>
+                                <td>{{ $catalog['created_at'] }}</td>
+                                <td class="description">{{ $catalog['description'] }}</td>
+                                <td class="action-icons">
+                                    <button class="edit-button" data-id="{{ $id }}" 
+                                        data-name="{{ $catalog['name'] }}" 
+                                        data-description="{{ $catalog['description'] }}" 
+                                        data-image="{{ $catalog['image'] }}" 
+                                        data-pdf="{{ $catalog['pdf'] }}" 
+                                        data-bs-toggle="modal" data-bs-target="#editCatalogModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    
+                                    <button class="delete-button" data-id="{{ $id }}" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-action="{{ route('catalog.delete', $id) }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    
+                                    <button class="info-button" data-id="{{ $id }}" 
+                                        data-name="{{ $catalog['name'] }}" 
+                                        data-date="{{ $catalog['created_at'] }}" 
+                                        data-description="{{ $catalog['description'] }}" 
+                                        data-image="{{ $catalog['image'] }}" 
+                                        data-pdf="{{ $catalog['pdf'] }}"
+                                        data-bs-toggle="modal" data-bs-target="#detailCatalogModal">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="5" class="text-center">No catalogs available.</td>
+                        </tr>
+                    @endif
+                </tbody>                              
             </table>
         </div>
     </div>
@@ -306,22 +391,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createCatalogForm">
+                    <form id="createCatalogForm" method="POST" action="{{ route('catalog.create') }}" enctype="multipart/form-data">
+                        @csrf
                         <div class="mb-3">
                             <label for="catalogName" class="form-label">Catalog Name</label>
-                            <input type="text" class="form-control" id="catalogName" required>
+                            <input type="text" class="form-control" id="catalogName" name="catalogName" required>
                         </div>
                         <div class="mb-3">
                             <label for="catalogDescription" class="form-label">Catalog Description</label>
-                            <textarea class="form-control" id="catalogDescription" rows="3" required></textarea>
+                            <textarea class="form-control" id="catalogDescription" name="catalogDescription" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="catalogImage" class="form-label">Catalog Image</label>
-                            <input type="file" class="form-control" id="catalogImage" accept="image/*" required>
+                            <input type="file" class="form-control" id="catalogImage" name="catalogImage" accept="image/*" required>
                         </div>
                         <div class="mb-3">
-                            <label for="catalogPdf" class="form-label">Catalog PDF</label>
-                            <input type="file" class="form-control" id="catalogPdf" accept="application/pdf" required>
+                            <label for="catalogPDF" class="form-label">Catalog PDF</label>
+                            <input type="file" class="form-control" id="catalogPDF" name="catalogPDF" accept="application/pdf" required>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-danger">Create Catalog</button>
@@ -341,183 +427,181 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editCatalogForm">
-                        <input type="hidden" id="editCatalogId">
+                    <form id="editCatalogForm" action="{{ route('catalog.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" id="editCatalogId" name="catalogId">
                         <div class="mb-3">
                             <label for="editCatalogName" class="form-label">Catalog Name</label>
-                            <input type="text" class="form-control" id="editCatalogName" required>
+                            <input type="text" class="form-control" id="editCatalogName" name="catalogName" required>
                         </div>
                         <div class="mb-3">
                             <label for="editCatalogDescription" class="form-label">Catalog Description</label>
-                            <textarea class="form-control" id="editCatalogDescription" rows="3" required></textarea>
+                            <textarea class="form-control" id="editCatalogDescription" name="catalogDescription" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="editCatalogImage" class="form-label">Catalog Image</label>
-                            <input type="file" class="form-control" id="editCatalogImage" accept="image/*">
+                            <label for="editCatalogImage" class="form-label">Catalog Image (optional)</label>
+                            <input type="file" class="form-control" id="editCatalogImage" name="catalogImage" accept="image/*">
                         </div>
                         <div class="mb-3">
-                            <label for="editCatalogPdf" class="form-label">Catalog PDF</label>
-                            <input type="file" class="form-control" id="editCatalogPdf" accept="application/pdf">
+                            <label for="editCatalogPdf" class="form-label">Catalog PDF (optional)</label>
+                            <input type="file" class="form-control" id="editCatalogPdf" name="catalogPDF" accept="application/pdf">
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-danger">Save Changes</button>
                         </div>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for deletion -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this product?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" action="{{ route('catalog.delete', $id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
-        <!-- Modal for deletion -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this product?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
-                    </div>
+    <!-- Modal for details -->
+    <div class="modal fade" id="detailCatalogModal" tabindex="-1" aria-labelledby="detailCatalogModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailCatalogModalLabel">Catalog Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td><strong>Product Name:</strong></td>
+                                <td><span id="detailProductName"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Date & Time:</strong></td>
+                                <td><span id="detailProductDate"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Description:</strong></td>
+                                <td><span id="detailProductDescription"></span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Image:</strong></td>
+                                <td>
+                                    <img id="detailProductImage" src="" alt="Product Image" class="img-fluid" style="max-width: 200px;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>PDF File:</strong></td>
+                                <td>
+                                    <a id="detailProductPdf" href="" target="_blank">View PDF</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Modal for details -->
-        <div class="modal fade" id="detailCatalogModal" tabindex="-1" aria-labelledby="detailCatalogModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="detailCatalogModalLabel">Catalog Details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <td><strong>Product Name:</strong></td>
-                                    <td><span id="detailProductName"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Date & Time:</strong></td>
-                                    <td><span id="detailProductDate"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Description:</strong></td>
-                                    <td><span id="detailProductDescription"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Image:</strong></td>
-                                    <td>
-                                        <img id="detailProductImage" src="" alt="Product Image" class="img-fluid" style="max-width: 200px;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>PDF File:</strong></td>
-                                    <td>
-                                        <a id="detailProductPdf" href="" target="_blank">View PDF</a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <!-- Logout Modal -->
+    <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmLogoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to log out?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Log Out</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let deleteProductId = null;
-    
-        // Show the edit modal and populate the fields
+
+        document.getElementById('search').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#catalogTableBody .catalog-row');
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.catalog-name').textContent.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('toggleBtn').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+
+            sidebar.classList.toggle('visible');
+            content.classList.toggle('shift');
+        });
+
         document.querySelectorAll('.edit-button').forEach(button => {
-            button.addEventListener('click', function () {
-                const rowId = this.getAttribute('data-id');
-                const existingData = {
-                    1: {
-                        name: 'Product 1',
-                        description: 'Added a new product to the catalog.',
-                    },
-                    2: {
-                        name: 'Product 2',
-                        description: 'Updated product details for Product 2.',
-                    },
-                    3: {
-                        name: 'Product 3',
-                        description: 'Removed a discontinued product from the catalog.',
-                    },
-                };
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const name = this.dataset.name;
+                const description = this.dataset.description;
+                const image = this.dataset.image;
+                const pdf = this.dataset.pdf;
     
-                const productData = existingData[rowId];
-                document.getElementById('editCatalogId').value = rowId;
-                document.getElementById('editCatalogName').value = productData.name;
-                document.getElementById('editCatalogDescription').value = productData.description;
-    
-                const editCatalogModal = new bootstrap.Modal(document.getElementById('editCatalogModal'));
-                editCatalogModal.show();
+                document.getElementById('editCatalogId').value = id;
+                document.getElementById('editCatalogName').value = name;
+                document.getElementById('editCatalogDescription').value = description;
             });
         });
-    
-        // Handle delete button click
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', function () {
-                deleteProductId = this.getAttribute('data-id');
-                const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-                confirmDeleteModal.show();
-            });
-        });
-    
-        // Detail modal functionality
-        const detailModal = new bootstrap.Modal(document.getElementById('detailCatalogModal'));
-    
+
         document.querySelectorAll('.info-button').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const productId = button.getAttribute('data-id');
-    
-                const catalogData = {
-                    1: {
-                        name: 'Digital Stethoscope',
-                        date: '2024-10-09 12:45 PM',
-                        description: 'A digital stethoscope is an innovative tool used to visually observe heart sounds without the need to rely on the sense of hearing. It focuses on utilizing sound signals specifically to detect heart valve disease.',
-                    },
-                    2: {
-                        name: 'SiHEDAF',
-                        date: '2024-10-09 1:15 PM',
-                        description: 'SiHEDAF functions as an Atrial Fibrillation (AF) detector based on Photoplethysmograph (PPG) signal. AF occurrence statistics can be used as an indication of stroke risk in patients.',
-                    },
-                    3: {
-                        name: 'Antropometri Kit',
-                        date: '2024-10-09 2:05 PM',
-                        description: 'Anthropometry Kit is a series of tools that function to detect stunting in children through measuring body weight, length and height as well as upper arm and head circumference.',
-                    },
-                    4: {
-                        name: 'AMons',
-                        date: '2024-10-09 3:05 PM',
-                        description: 'AMons is a portable ECG device equipped with AI-based detection algorithms for near real-time detection and alerting of various arrhythmias, offering a solution for monitoring and timely intervention in heart conditions that may otherwise go undetected',
-                    },
-                };
-    
-                const product = catalogData[productId];
-                document.getElementById('detailProductName').textContent = product.name;
-                document.getElementById('detailProductDate').textContent = product.date;
-                document.getElementById('detailProductDescription').textContent = product.description;
-    
-                detailModal.show();
+            button.addEventListener('click', function() {
+                const name = this.dataset.name;
+                const date = this.dataset.date;
+                const description = this.dataset.description;
+                const image = this.dataset.image;
+                const pdf = this.dataset.pdf;
+
+                document.getElementById('detailProductName').textContent = name;
+                document.getElementById('detailProductDate').textContent = date;
+                document.getElementById('detailProductDescription').textContent = description;
+                document.getElementById('detailProductImage').src = image;
+                document.getElementById('detailProductPdf').href = pdf;
+                
             });
         });
-    
-        document.getElementById('createCatalogForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            alert('Catalog created!');
-            bootstrap.Modal.getInstance(document.getElementById('createCatalogModal')).hide();
-        });
+
     </script>
+    
+    
 </body>
 
 </html>

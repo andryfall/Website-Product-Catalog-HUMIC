@@ -8,30 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Login Page</title>
     <style>
+        body {
+            background-image: url('{{url('/images/Login-bg.png')}}');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+        }
+
         .left-image {
-            background-color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
             height: 100vh;
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1;
         }
 
         .logo {
             max-width: 120px;
             height: auto;
-            position: relative;
-            z-index: 2;
             display: block;
             margin: 0 auto 20px;
         }
@@ -43,8 +38,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            position: relative;
-            z-index: 2;
         }
 
         .login-form h2 {
@@ -84,28 +77,41 @@
     </style>
 </head>
 
+@if(session('success'))
+<div class="alert alert-success alert-dismissible fade show fixed-top mx-auto text-center mt-3" role="alert" style="width: 90%; max-width: 500px; z-index: 1050;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show fixed-top mx-auto text-center mt-3" role="alert" style="width: 90%; max-width: 500px; z-index: 1050;">
+        {{ $errors->first() }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <body>
     <div class="container-fluid h-100">
         <div class="row h-100">
             <div class="col-md-6 left-image d-none d-md-flex">
-                <img src="{{url('/images/logo-humic-text.png')}}" alt="Login Image" class="img-fluid">
             </div>
             <div class="col-md-6 right-column">
-                <div class="overlay"></div>
                 <div class="login-form">
                     <img src="{{url('/images/logo-humic-text.png')}}" alt="Logo" class="logo">
                     <h2 class="text-center">Login</h2>
-                    <form>
+                    <form action="{{ route('login.submit') }}" method="POST">
+                        @csrf
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                            <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
+                    </form>                    
                 </div>
             </div>
         </div>
