@@ -1,4 +1,4 @@
-## 1. Instal php (kalau belum)
+## 1. Instal laravel (kalau belum)
 https://laravel.com/docs/11.x/installation#installing-php
 
 ## 2. Buka folder aplikasi di vs code
