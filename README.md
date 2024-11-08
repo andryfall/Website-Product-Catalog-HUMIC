@@ -1,3 +1,19 @@
+## 1. Instal laravel (kalau belum)
+https://laravel.com/docs/11.x/installation#installing-php
+
+## 2. Download atau clone code
+
+## 3. Buka folder aplikasi di vs code
+
+## 4. di terminal run
+```
+composer install
+```
+## 5. kemudian run
+```
+php artisan serve
+```
+
 ## Update Tampilan
 
 Halaman Login
