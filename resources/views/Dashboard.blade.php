@@ -411,7 +411,7 @@
         });
 
         document.getElementById('confirmLogoutButton').addEventListener('click', function() {
-        window.location.href = 'login'; // Redirect to the login page or actual logout route
+        window.location.href = 'login';
          });
     </script>
 

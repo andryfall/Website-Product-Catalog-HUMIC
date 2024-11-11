@@ -242,133 +242,134 @@
 
         /* Catalog Section */
         .catalog-section {
-        padding: 180px 20px;
+        padding: 120px 20px;
         background-color: #b4262a;
         background-size: cover;
         background-position: center;
         }
 
         .catalog-title {
-            font-size: 50px;
+            font-size: 40px;
             text-align: center;
             color: #fff;
-            margin-bottom: 120px;
+            margin-bottom: 56px;
         }
 
         .catalog-card {
-            background-image: url('{{url('/images/bg-product.png')}}');
-            background-size: cover;
-            background-position: center;
-            border: none;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-            margin: 80px auto;
-            position: relative;
-            transition: transform 0.3s ease, background 0.3s ease;
-            height: 500px;
-            overflow: hidden;
-        }
+        background-image: url('{{url('/images/bg-product.png')}}');
+        background-size: cover;
+        background-position: center;
+        border: none;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        width: 100%;
+        max-width: 320px;
+        margin: 50px auto;
+        position: relative;
+        transition: transform 0.3s ease, background 0.3s ease;
+        height: 400px;
+        overflow: hidden;
+    }
 
-        .catalog-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 10px;
-            z-index: 0;
-        }
+    .catalog-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 10px;
+        z-index: 0;
+    }
 
-        .catalog-card:hover::before {
-            opacity: 1;
-        }
+    .catalog-card:hover::before {
+        opacity: 1;
+    }
 
-        .card-image-circular {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-color: #fff;
-            margin: 0 auto;
-            margin-bottom: 20px;
-            background-size: cover;
-            background-position: center;
-            transition: width 0.3s ease, height 0.3s ease;
-            z-index: 1;
-            position: relative;
-        }
+    .card-image-circular {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background-color: #fff;
+        margin: 0 auto;
+        margin-bottom: 12px;
+        background-size: cover;
+        background-position: center;
+        transition: width 0.3s ease, height 0.3s ease;
+        z-index: 1;
+        position: relative;
+    }
 
-        .catalog-product-name {
-            font-size: 30px;
-            font-weight: bold;
-            color: #ffffff;
-            transition: font-size 0.3s ease, opacity 0.3s ease;
-            z-index: 1;
-            position: relative;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            letter-spacing: 1px;
-        }
+    .catalog-product-name {
+        font-size: 22px;
+        font-weight: bold;
+        color: #ffffff;
+        transition: font-size 0.3s ease, opacity 0.3s ease;
+        z-index: 1;
+        position: relative;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: 1px;
+    }
+
+    .hovered-items {
+        position: relative;
+        z-index: 1;
+    }
+
+    .catalog-product-description,
+    .catalog-button {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease, font-size 0.3s ease;
+    }
+
+    .catalog-card:hover .catalog-product-name {
+        font-size: 14px;
+        margin-top: 6px;
+    }
+
+    .catalog-card:hover .card-image-circular {
+        width: 80px;
+        height: 80px;
+    }
+
+    .catalog-card:hover .catalog-product-description,
+    .catalog-card:hover .catalog-button {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .catalog-product-description {
+        font-weight: 500;
+        font-size: 14px;
+        color: #ffffff;
+        margin-top: 25px;
+    }
+
+    .catalog-button {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #ffffff;
+        color: #000000;
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 500;
+        border: none;
+        border-radius: 15px;
+        text-decoration: none;
+        margin-top: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+    .catalog-button:hover {
+        background-color: #e0cbcc;
+    }
 
 
-        .hovered-items {
-            position: relative;
-            z-index: 1;
-        }
-
-        .catalog-product-description,
-        .catalog-button {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease, font-size 0.3s ease;
-        }
-
-        .catalog-card:hover .catalog-product-name {
-            font-size: 18px;
-            margin-top: 10px;
-        }
-
-        .catalog-card:hover .card-image-circular {
-            width: 100px;
-            height: 100px;
-        }
-
-        .catalog-card:hover .catalog-product-description,
-        .catalog-card:hover .catalog-button {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .catalog-product-description {
-            font-weight: 500;
-            font-size: 18px;
-            color: #ffffff;
-            margin-top: 40px;
-        }
-
-        .catalog-button {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #ffffff;
-            color: #000000;
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 500;
-            border: none;
-            border-radius: 15px;
-            text-decoration: none;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .catalog-button:hover {
-            background-color: #e0cbcc;
-        }
 
         .catalog-swiper-container {
             overflow: hidden;
@@ -952,7 +953,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const swiper = new Swiper('.catalog-swiper-container', {
-                slidesPerView: 2,
+                slidesPerView: 4,
                 spaceBetween: 20,
                 pagination: {
                     el: '.catalog-swiper-pagination',
@@ -965,7 +966,8 @@
                 loop: true,
                 breakpoints: {
                     768: {
-                        slidesPerView: 2,
+                        slidesPerView: 3,
+                        spaceBetween: 20,
                     },
                     0: { 
                         slidesPerView: 1,
